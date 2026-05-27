@@ -33,9 +33,13 @@ export default function Home() {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   
-  // Tab mặc định luôn là 'kham-pha' để giữ nguyên trang đầu tuyệt đẹp của bạn
+  // Trạng thái xử lý Form Đăng nhập & Chuyển đổi tab
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [usernameInput, setUsernameInput] = useState('');
+  const [passwordInput, setPasswordInput] = useState('');
+  const [loggedInUser, setLoggedInUser] = useState('');
   const [currentTab, setCurrentTab] = useState('kham-pha');
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -86,7 +90,29 @@ export default function Home() {
     if (index !== -1) {
       setCurrentIndex(index);
       setIsPlaying(true);
-      setCurrentTab('kham-pha'); // Bấm chọn đĩa nhạc bên dưới thì đưa về trang phát nhạc chính
+      setCurrentTab('kham-pha');
+    }
+  };
+
+  // Click vào nút Sidebar để xử lý Login/Logout
+  const handleLoginClick = () => {
+    if (isLoggedIn) {
+      setIsLoggedIn(false);
+      setLoggedInUser('');
+      setUsernameInput('');
+      setPasswordInput('');
+    } else {
+      setShowLoginModal(true); // Hiện Form đăng nhập lên
+    }
+  };
+
+  // Submit Form Đăng nhập
+  const handleLoginSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (usernameInput.trim() !== '') {
+      setLoggedInUser(usernameInput);
+      setIsLoggedIn(true);
+      setShowLoginModal(false); // Đăng nhập xong tự động ẩn Form đi
     }
   };
 
@@ -109,13 +135,58 @@ export default function Home() {
   );
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#020202', color: '#fff', fontFamily: 'sans-serif' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#020202', color: '#fff', fontFamily: 'sans-serif', position: 'relative' }}>
       
       <audio ref={audioRef} crossOrigin="anonymous">
         <source src={currentSong.src} type="audio/mpeg" />
       </audio>
 
-      {/* 1. THANH SIDEBAR BÊN TRÁI - GIỮ NGUYÊN GIAO DIỆN GỐC */}
+      {/* ========================================================
+          POPUP KHUNG ĐĂNG NHẬP (ẨN ĐI, CHỈ HIỆN KHI CLICK ĐĂNG NHẬP)
+         ======================================================== */}
+      {showLoginModal && (
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'rgba(0,0,0,0.75)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
+          <div style={{ backgroundColor: '#0d0d0d', border: '1px solid #222', padding: '30px', borderRadius: '16px', width: '100%', maxWidth: '320px', boxShadow: '0 10px 30px rgba(0,0,0,0.8)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 'bold', color: '#ff4757' }}>🔑 ĐĂNG NHẬP HỆ THỐNG</h3>
+              <button onClick={() => setShowLoginModal(false)} style={{ backgroundColor: 'transparent', border: 'none', color: '#666', fontSize: '1.2rem', cursor: 'pointer' }}>✕</button>
+            </div>
+            
+            <form onSubmit={handleLoginSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', color: '#aaa', marginBottom: '6px' }}>Tên đăng nhập</label>
+                <input 
+                  type="text" 
+                  required
+                  placeholder="Nhập tên tài khoản..."
+                  value={usernameInput}
+                  onChange={(e) => setUsernameInput(e.target.value)}
+                  style={{ width: '100%', padding: '10px 12px', borderRadius: '6px', border: '1px solid #222', backgroundColor: '#050505', color: '#fff', outline: 'none', fontSize: '0.9rem' }}
+                />
+              </div>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', color: '#aaa', marginBottom: '6px' }}>Mật khẩu</label>
+                <input 
+                  type="password" 
+                  required
+                  placeholder="••••••••"
+                  value={passwordInput}
+                  onChange={(e) => setPasswordInput(e.target.value)}
+                  style={{ width: '100%', padding: '10px 12px', borderRadius: '6px', border: '1px solid #222', backgroundColor: '#050505', color: '#fff', outline: 'none', fontSize: '0.9rem' }}
+                />
+              </div>
+              <button 
+                type="submit" 
+                style={{ width: '100%', padding: '11px', marginTop: '5px', borderRadius: '20px', border: 'none', backgroundColor: '#ff4757', color: '#fff', fontWeight: 'bold', cursor: 'pointer', fontSize: '0.9rem' }}
+              >
+                Xác nhận
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* 1. THANH SIDEBAR BÊN TRÁI - HOÀN TOÀN GIỮ NGUYÊN */}
       <div style={{ width: '240px', backgroundColor: '#0d0d0d', borderRight: '1px solid #1a1a1a', padding: '20px 0', display: 'flex', flexDirection: 'column', flexShrink: 0, position: 'sticky', top: 0, height: '100vh', overflowY: 'auto' }}>
         <div style={{ padding: '0 25px', marginBottom: '25px' }}>
           <h1 style={{ fontSize: '1.4rem', fontWeight: 'bold', margin: 0, color: '#ff4757', display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -125,34 +196,20 @@ export default function Home() {
           <p style={{ margin: '4px 0 0 0', fontSize: '0.65rem', color: '#666', letterSpacing: '0.5px', textTransform: 'uppercase' }}>Ứng dụng nghe nhạc trực tuyến</p>
         </div>
 
+        {/* NÚT KÍCH HOẠT HIỂN THỊ POPUP ĐĂNG NHẬP */}
         <div style={{ padding: '0 20px', marginBottom: '25px' }}>
-          <button onClick={() => setIsLoggedIn(!isLoggedIn)} style={{ width: '100%', padding: '11px', borderRadius: '20px', border: 'none', backgroundColor: isLoggedIn ? '#2ed573' : '#ff4757', color: '#fff', fontSize: '0.85rem', fontWeight: 'bold', cursor: 'pointer', outline: 'none' }}>
-            {isLoggedIn ? '👤 Đã đăng nhập' : '🔐 Đăng nhập hệ thống'}
+          <button 
+            onClick={handleLoginClick} 
+            style={{ width: '100%', padding: '11px', borderRadius: '20px', border: 'none', backgroundColor: isLoggedIn ? '#2ed573' : '#ff4757', color: '#fff', fontSize: '0.85rem', fontWeight: 'bold', cursor: 'pointer', outline: 'none' }}
+          >
+            {isLoggedIn ? `👤 ${loggedInUser} (Đăng xuất)` : '🔐 Đăng nhập hệ thống'}
           </button>
         </div>
 
-        {/* ĐIỀU HƯỚNG TAB CHUYỂN ĐỔI TRANG MƯỢT MÀ */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-          <div 
-            onClick={() => setCurrentTab('kham-pha')} 
-            style={{ padding: '10px 25px', display: 'flex', alignItems: 'center', gap: '12px', color: currentTab === 'kham-pha' ? '#fff' : '#aaa', backgroundColor: currentTab === 'kham-pha' ? '#111' : 'transparent', borderLeft: currentTab === 'kham-pha' ? '3px solid #ff4757' : '3px solid transparent', cursor: 'pointer', fontSize: '0.9rem', fontWeight: currentTab === 'kham-pha' ? 'bold' : 'normal' }}
-          >
-            📻 <span>Khám Phá</span>
-          </div>
-          
-          <div 
-            onClick={() => setCurrentTab('chart')} 
-            style={{ padding: '10px 25px', display: 'flex', alignItems: 'center', gap: '12px', color: currentTab === 'chart' ? '#fff' : '#aaa', backgroundColor: currentTab === 'chart' ? '#111' : 'transparent', borderLeft: currentTab === 'chart' ? '3px solid #ff4757' : '3px solid transparent', cursor: 'pointer', fontSize: '0.9rem', fontWeight: currentTab === 'chart' ? 'bold' : 'normal' }}
-          >
-            📈 <span>#melodychart</span>
-          </div>
-          
-          <div 
-            onClick={() => setCurrentTab('thu-vien')} 
-            style={{ padding: '10px 25px', display: 'flex', alignItems: 'center', gap: '12px', color: currentTab === 'thu-vien' ? '#fff' : '#aaa', backgroundColor: currentTab === 'thu-vien' ? '#111' : 'transparent', borderLeft: currentTab === 'thu-vien' ? '3px solid #ff4757' : '3px solid transparent', cursor: 'pointer', fontSize: '0.9rem', fontWeight: currentTab === 'thu-vien' ? 'bold' : 'normal' }}
-          >
-            🎵 <span>Thư Viện</span>
-          </div>
+          <div onClick={() => setCurrentTab('kham-pha')} style={{ padding: '10px 25px', display: 'flex', alignItems: 'center', gap: '12px', color: currentTab === 'kham-pha' ? '#fff' : '#aaa', backgroundColor: currentTab === 'kham-pha' ? '#111' : 'transparent', borderLeft: currentTab === 'kham-pha' ? '3px solid #ff4757' : '3px solid transparent', cursor: 'pointer', fontSize: '0.9rem', fontWeight: currentTab === 'kham-pha' ? 'bold' : 'normal' }}>📻 <span>Khám Phá</span></div>
+          <div onClick={() => setCurrentTab('chart')} style={{ padding: '10px 25px', display: 'flex', alignItems: 'center', gap: '12px', color: currentTab === 'chart' ? '#fff' : '#aaa', backgroundColor: currentTab === 'chart' ? '#111' : 'transparent', borderLeft: currentTab === 'chart' ? '3px solid #ff4757' : '3px solid transparent', cursor: 'pointer', fontSize: '0.9rem', fontWeight: currentTab === 'chart' ? 'bold' : 'normal' }}>📈 <span>#melodychart</span></div>
+          <div onClick={() => setCurrentTab('thu-vien')} style={{ padding: '10px 25px', display: 'flex', alignItems: 'center', gap: '12px', color: currentTab === 'thu-vien' ? '#fff' : '#aaa', backgroundColor: currentTab === 'thu-vien' ? '#111' : 'transparent', borderLeft: currentTab === 'thu-vien' ? '3px solid #ff4757' : '3px solid transparent', cursor: 'pointer', fontSize: '0.9rem', fontWeight: currentTab === 'thu-vien' ? 'bold' : 'normal' }}>🎵 <span>Thư Viện</span></div>
         </div>
 
         <hr style={{ border: 'none', borderTop: '1px solid #111', margin: '15px 20px' }} />
@@ -164,10 +221,10 @@ export default function Home() {
         </div>
       </div>
 
-      {/* 2. NỘI DUNG CHÍNH BÊN PHẢI - GIỮ NGUYÊN HOÀN TOÀN THANH SEARCH TRÊN CÙNG */}
+      {/* 2. NỘI DUNG CHÍNH BÊN PHẢI - HOÀN TOÀN CỐ ĐỊNH LAYOUT GỐC */}
       <div style={{ flex: 1, padding: '30px 40px', display: 'flex', flexDirection: 'column', overflowY: 'auto', height: '100vh' }}>
         
-        {/* THANH TÌM KIẾM LUÔN CỐ ĐỊNH Ở TRÊN CÙNG TRÊN MỌI TRANG */}
+        {/* THANH TÌM KIẾM LUÔN NẰM TRÊN CÙNG */}
         <div style={{ display: 'flex', width: '100%', maxWidth: '380px', marginBottom: '35px', alignSelf: 'flex-start' }}>
           <input 
             type="text" 
@@ -178,17 +235,10 @@ export default function Home() {
           />
         </div>
 
-        {/* ==========================================
-            ĐIỀU KHIỂN NỘI DUNG THAY ĐỔI THEO TRANG
-           ========================================== */}
-
-        {/* TRANG 1: KHÁM PHÁ - GIỮ NGUYÊN VẸN 100% GIAO DIỆN GỐC TUYỆT ĐẸP CỦA BẠN */}
+        {/* TRANG 1: KHÁM PHÁ (GIAO DIỆN CHÍNH GỐC LUNG LINH CỦA BẠN) */}
         {currentTab === 'kham-pha' && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
-            
-            {/* Khung trình phát đĩa nhạc */}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: '#0a0a0a', padding: '30px', borderRadius: '24px', border: '1px solid #1a1a1a', boxShadow: '0 10px 40px rgba(0,0,0,0.5)', width: '100%', maxWidth: '380px', marginBottom: '40px' }}>
-              
               <div style={{ marginBottom: '25px' }}>
                 <div style={{ width: '200px', height: '200px', borderRadius: '50%', overflow: 'hidden', border: '8px solid #1c1c1c', boxShadow: '0 0 25px rgba(255,71,87,0.2)', position: 'relative' }}>
                   <img src={currentSong.img} alt={currentSong.title} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%', animation: 'spin 12s linear infinite', animationPlayState: isPlaying ? 'running' : 'paused' }} />
@@ -218,7 +268,6 @@ export default function Home() {
 
             <h3 style={{ fontSize: '1.2rem', marginBottom: '20px', color: '#666', letterSpacing: '1px', textTransform: 'uppercase' }}>Popular Songs</h3>
 
-            {/* Danh sách bài hát gốc lung linh */}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '15px', justifyContent: 'center', maxWidth: '800px' }}>
               {filteredSongs.map((song) => (
                 <div key={song.id} onClick={() => handleSelectSong(song.id)} style={{ backgroundColor: currentSong.id === song.id ? '#0a0a0a' : '#020202', border: currentSong.id === song.id ? '1px solid #ff4757' : '1px solid #111', padding: '12px', borderRadius: '12px', cursor: 'pointer', width: '140px', textAlign: 'center', transition: 'all 0.2s ease' }}>
@@ -251,22 +300,22 @@ export default function Home() {
           </div>
         )}
 
-        {/* TRANG 3: THƯ VIỆN ĐỘC QUYỀN */}
+        {/* TRANG 3: THƯ VIỆN (CHÀO MỪNG THEO TÊN USER ĐÃ ĐĂNG NHẬP) */}
         {currentTab === 'thu-vien' && (
           <div style={{ width: '100%', maxWidth: '600px', alignSelf: 'center', textAlign: 'center', padding: '40px', backgroundColor: '#0a0a0a', borderRadius: '24px', border: '1px solid #1a1a1a', marginTop: '20px' }}>
             <h2 style={{ fontSize: '1.8rem', marginBottom: '15px', color: '#ff4757' }}>🎵 Thư Viện Cá Nhân</h2>
             {isLoggedIn ? (
               <div>
                 <div style={{ width: '90px', height: '90px', borderRadius: '50%', backgroundColor: '#ff4757', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem', margin: '0 auto 20px auto' }}>👤</div>
-                <h3 style={{ margin: '0 0 8px 0', fontSize: '1.3rem', color: '#2ed573' }}>Thành Viên Premium</h3>
-                <p style={{ margin: '0 0 25px 0', color: '#666', fontSize: '0.9rem' }}>Dự án Website Âm Nhạc Cá Nhân</p>
+                <h3 style={{ margin: '0 0 8px 0', fontSize: '1.3rem', color: '#2ed573' }}>Chào mừng, {loggedInUser}!</h3>
+                <p style={{ margin: '0 0 25px 0', color: '#666', fontSize: '0.9rem' }}>Tài khoản Premium cá nhân hóa</p>
                 <div style={{ padding: '15px', backgroundColor: '#111', borderRadius: '12px', textAlign: 'left', fontSize: '0.9rem', color: '#aaa' }}>
-                  🚀 <b>Trạng thái:</b> Bạn đang quản lý danh sách gồm <b>{songs.length}</b> bài hát chất lượng cao trên hệ thống.
+                  🚀 <b>Đồng bộ dữ liệu:</b> Thư viện đã kết nối! Bạn đang sở hữu kho lưu trữ gồm <b>{songs.length}</b> bài hát độc quyền.
                 </div>
               </div>
             ) : (
               <div>
-                <p style={{ color: '#aaa', marginBottom: '25px', fontSize: '1rem' }}>Vui lòng bấm nút <b>"🔐 Đăng nhập hệ thống"</b> bên Sidebar trái để truy cập không gian thư viện cá nhân.</p>
+                <p style={{ color: '#aaa', marginBottom: '25px', fontSize: '1rem' }}>Vui lòng bấm nút <b>"🔐 Đăng nhập hệ thống"</b> bên Sidebar trái và điền thông tin tài khoản để truy cập không gian cá nhân.</p>
                 <div style={{ fontSize: '4rem', opacity: 0.15 }}>🔒</div>
               </div>
             )}
