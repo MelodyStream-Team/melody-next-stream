@@ -31,8 +31,6 @@ export default function Home() {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
-  
-  // Trạng thái đăng nhập giả lập để tăng tính tương tác
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -109,61 +107,59 @@ export default function Home() {
       <audio ref={audioRef} src={currentSong.src} autoPlay={isPlaying} />
 
       {/* ========================================================
-          1. THANH CHỨC NĂNG BÊN TRÁI (SIDEBAR STYLE ZING MP3)
+          1. THANH CHỨC NĂNG BÊN TRÁI (SIDEBAR THƯƠNG HIỆU RIÊNG)
          ======================================================== */}
-      <div style={{ width: '240px', backgroundColor: '#120c1c', borderRight: '1px solid #1c1724', padding: '20px 0', display: 'flex', flexDirection: 'column', flexShrink: 0, position: 'sticky', top: 0, height: '100vh', overflowY: 'auto' }}>
+      <div style={{ width: '240px', backgroundColor: '#0d0d0d', borderRight: '1px solid #1a1a1a', padding: '20px 0', display: 'flex', flexDirection: 'column', flexShrink: 0, position: 'sticky', top: 0, height: '100vh', overflowY: 'auto' }}>
         
-        {/* Logo Thương Hiệu Giả Lập */}
-        <div style={{ padding: '0 25px', marginBottom: '20px' }}>
-          <h1 style={{ fontSize: '1.6rem', fontWeight: 'bold', margin: 0, display: 'flex', alignItems: 'center', gap: '5px' }}>
-            <span style={{ color: '#7209b7' }}>Zing</span>
-            <span style={{ fontSize: '1.1rem', backgroundColor: '#fff', color: '#7209b7', padding: '2px 6px', borderRadius: '4px' }}>mp3</span>
+        {/* Tên dự án Melody Stream độc quyền */}
+        <div style={{ padding: '0 25px', marginBottom: '25px' }}>
+          <h1 style={{ fontSize: '1.4rem', fontWeight: 'bold', margin: 0, letterSpacing: '0.5px', color: '#ff4757', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span>🎵 Melody</span>
+            <span style={{ fontSize: '0.75rem', backgroundColor: '#ff4757', color: '#fff', padding: '2px 6px', borderRadius: '4px', fontWeight: 'normal' }}>STREAM</span>
           </h1>
-          <p style={{ margin: '4px 0 0 0', fontSize: '0.65rem', color: '#aaa', letterSpacing: '1px' }}>MXH ÂM NHẠC Bài Tập Lớn</p>
+          <p style={{ margin: '4px 0 0 0', fontSize: '0.65rem', color: '#666', letterSpacing: '0.5px', textTransform: 'uppercase' }}>Ứng dụng nghe nhạc trực tuyến</p>
         </div>
 
-        {/* NÚT ĐĂNG NHẬP (Mới bổ sung nâng cấp) */}
-        <div style={{ padding: '0 20px', marginBottom: '20px' }}>
+        {/* Chức năng đăng nhập hệ thống */}
+        <div style={{ padding: '0 20px', marginBottom: '25px' }}>
           <button 
             onClick={() => setIsLoggedIn(!isLoggedIn)}
-            style={{ width: '100%', padding: '10px', borderRadius: '20px', border: 'none', backgroundColor: isLoggedIn ? '#4ad66d' : '#7209b7', color: '#fff', fontSize: '0.85rem', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 4px 12px rgba(114,9,183,0.3)', transition: 'all 0.2s' }}
+            style={{ width: '100%', padding: '11px', borderRadius: '20px', border: 'none', backgroundColor: isLoggedIn ? '#2ed573' : '#ff4757', color: '#fff', fontSize: '0.85rem', fontWeight: 'bold', cursor: 'pointer', boxShadow: isLoggedIn ? '0 4px 12px rgba(46,213,115,0.2)' : '0 4px 12px rgba(255,71,87,0.2)', transition: 'all 0.2s', outline: 'none' }}
           >
-            {isLoggedIn ? '👤 Đã Đăng Nhập' : '🔐 Đăng Nhập Hệ Thống'}
+            {isLoggedIn ? '👤 Đã đăng nhập' : '🔐 Đăng nhập hệ thống'}
           </button>
         </div>
 
-        {/* Danh mục menu chính */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-          <div style={{ padding: '10px 25px', display: 'flex', alignItems: 'center', gap: '12px', color: '#fff', backgroundColor: '#2f2739', borderLeft: '3px solid #7209b7', cursor: 'pointer', fontSize: '0.9rem' }}>📻 <span>Khám Phá</span></div>
-          <div style={{ padding: '10px 25px', display: 'flex', alignItems: 'center', gap: '12px', color: '#dadada', cursor: 'pointer', fontSize: '0.9rem' }}>📈 <span>#zingchart</span></div>
-          <div style={{ padding: '10px 25px', display: 'flex', alignItems: 'center', gap: '12px', color: '#dadada', cursor: 'pointer', fontSize: '0.9rem' }}>🎵 <span>Thư Viện</span></div>
-          <div style={{ padding: '10px 25px', display: 'flex', alignItems: 'center', gap: '12px', color: '#dadada', cursor: 'pointer', fontSize: '0.9rem' }}>🎤 <span>Phòng Nhạc</span> <span style={{ fontSize: '0.6rem', backgroundColor: 'red', padding: '1px 4px', borderRadius: '3px', fontWeight: 'bold' }}>LIVE</span></div>
+        {/* Danh sách các chức năng chính để điều hướng */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+          <div style={{ padding: '10px 25px', display: 'flex', alignItems: 'center', gap: '12px', color: '#fff', backgroundColor: '#111', borderLeft: '3px solid #ff4757', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 'bold' }}>📻 <span>Khám Phá</span></div>
+          <div style={{ padding: '10px 25px', display: 'flex', alignItems: 'center', gap: '12px', color: '#aaa', cursor: 'pointer', fontSize: '0.9rem' }}>📈 <span>#melodychart</span></div>
+          <div style={{ padding: '10px 25px', display: 'flex', alignItems: 'center', gap: '12px', color: '#aaa', cursor: 'pointer', fontSize: '0.9rem' }}>🎵 <span>Thư Viện</span></div>
+          <div style={{ padding: '10px 25px', display: 'flex', alignItems: 'center', gap: '12px', color: '#aaa', cursor: 'pointer', fontSize: '0.9rem' }}>🎤 <span>Phòng Nhạc</span> <span style={{ fontSize: '0.6rem', backgroundColor: '#ff4757', padding: '1px 5px', borderRadius: '3px', fontWeight: 'bold', color: '#fff' }}>LIVE</span></div>
         </div>
 
-        <hr style={{ border: 'none', borderTop: '1px solid #1c1724', margin: '15px 20px' }} />
+        <hr style={{ border: 'none', borderTop: '1px solid #111', margin: '15px 20px' }} />
 
-        {/* Danh mục menu phụ phía dưới giống ảnh */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-          <div style={{ padding: '10px 25px', display: 'flex', alignItems: 'center', gap: '12px', color: '#b3b3b3', cursor: 'pointer', fontSize: '0.85rem' }}>🆕 <span>BXH Nhạc Mới</span></div>
-          <div style={{ padding: '10px 25px', display: 'flex', alignItems: 'center', gap: '12px', color: '#b3b3b3', cursor: 'pointer', fontSize: '0.85rem' }}>🎭 <span>Chủ Đề & Thể Loại</span></div>
-          <div style={{ padding: '10px 25px', display: 'flex', alignItems: 'center', gap: '12px', color: '#b3b3b3', cursor: 'pointer', fontSize: '0.85rem' }}>⭐ <span>Top 100</span></div>
-          <div style={{ padding: '10px 25px', display: 'flex', alignItems: 'center', gap: '12px', color: '#b3b3b3', cursor: 'pointer', fontSize: '0.85rem' }}>🕒 <span>Nghe gần đây</span></div>
-          <div style={{ padding: '10px 25px', display: 'flex', alignItems: 'center', gap: '12px', color: '#b3b3b3', cursor: 'pointer', fontSize: '0.85rem' }}>💙 <span>Bài hát yêu thích</span></div>
-          <div style={{ padding: '10px 25px', display: 'flex', alignItems: 'center', gap: '12px', color: '#b3b3b3', cursor: 'pointer', fontSize: '0.85rem' }}>📂 <span>Playlist</span></div>
-          <div style={{ padding: '10px 25px', display: 'flex', alignItems: 'center', gap: '12px', color: '#b3b3b3', cursor: 'pointer', fontSize: '0.85rem' }}>💿 <span>Album</span></div>
-          <div style={{ padding: '10px 25px', display: 'flex', alignItems: 'center', gap: '12px', color: '#b3b3b3', cursor: 'pointer', fontSize: '0.85rem' }}>📥 <span>Đã tải lên</span></div>
+        {/* Các mục chức năng mở rộng phía dưới */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+          <div style={{ padding: '10px 25px', display: 'flex', alignItems: 'center', gap: '12px', color: '#888', cursor: 'pointer', fontSize: '0.85rem' }}>🆕 <span>Bảng Xếp Hạng Mới</span></div>
+          <div style={{ padding: '10px 25px', display: 'flex', alignItems: 'center', gap: '12px', color: '#888', cursor: 'pointer', fontSize: '0.85rem' }}>🎭 <span>Chủ Đề & Thể Loại</span></div>
+          <div style={{ padding: '10px 25px', display: 'flex', alignItems: 'center', gap: '12px', color: '#888', cursor: 'pointer', fontSize: '0.85rem' }}>⭐ <span>Top 100 Siêu Phẩm</span></div>
+          <div style={{ padding: '10px 25px', display: 'flex', alignItems: 'center', gap: '12px', color: '#888', cursor: 'pointer', fontSize: '0.85rem' }}>🕒 <span>Nghe gần đây</span></div>
+          <div style={{ padding: '10px 25px', display: 'flex', alignItems: 'center', gap: '12px', color: '#888', cursor: 'pointer', fontSize: '0.85rem' }}>💙 <span>Bài hát yêu thích</span></div>
+          <div style={{ padding: '10px 25px', display: 'flex', alignItems: 'center', gap: '12px', color: '#888', cursor: 'pointer', fontSize: '0.85rem' }}>📂 <span>Danh sách phát</span></div>
         </div>
       </div>
 
       {/* ========================================================
-          2. NỘI DUNG CHÍNH BÊN PHẢI (GIỮ NGUYÊN GIAO DIỆN HIỆN TẠI)
+          2. NỘI DUNG CHÍNH BÊN PHẢI (TRÌNH PHÁT VÀ PLAYLIST)
          ======================================================== */}
       <div style={{ flex: 1, padding: '40px', display: 'flex', flexDirection: 'column', alignItems: 'center', overflowY: 'auto', height: '100vh' }}>
         
-        {/* Cụm đĩa nhạc và bộ nút bấm căn giữa y hệt cũ */}
+        {/* Bộ khung trình phát nhạc ở trung tâm màn hình */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: '#0a0a0a', padding: '30px', borderRadius: '24px', border: '1px solid #1a1a1a', boxShadow: '0 10px 40px rgba(0,0,0,0.5)', width: '100%', maxWidth: '380px', marginBottom: '30px' }}>
           
-          {/* Đĩa nhạc quay tròn */}
+          {/* Đĩa nhạc quay hình tròn */}
           <div style={{ marginBottom: '25px' }}>
             <div style={{ width: '200px', height: '200px', borderRadius: '50%', overflow: 'hidden', border: '8px solid #1c1c1c', boxShadow: '0 0 25px rgba(255,71,87,0.2)', position: 'relative' }}>
               <img 
@@ -182,13 +178,13 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Tiêu đề bài hát */}
+          {/* Tiêu đề bài hát đang phát (Đã sửa chính tả textAlign đỏ dòng 165) */}
           <div style={{ textAlign: 'center', marginBottom: '20px', width: '100%' }}>
             <h2 style={{ fontSize: '1.5rem', margin: '0 0 6px 0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{currentSong.title}</h2>
             <p style={{ color: '#ff4757', margin: 0, fontWeight: 'bold', fontSize: '0.95rem' }}>{currentSong.artist}</p>
           </div>
 
-          {/* Thanh tua nhạc chuyển tiếp dưới đĩa */}
+          {/* Thanh chuyển tiếp / tua thời gian trực tiếp dưới đĩa nhạc */}
           <div style={{ display: 'flex', alignItems: 'center', width: '100%', gap: '10px', marginBottom: '20px' }}>
             <span style={{ fontSize: '0.75rem', color: '#666', minWidth: '35px' }}>{formatTime(currentTime)}</span>
             <input 
@@ -202,7 +198,7 @@ export default function Home() {
             <span style={{ fontSize: '0.75rem', color: '#666', minWidth: '35px' }}>{formatTime(duration)}</span>
           </div>
 
-          {/* Bộ điều khiển lùi, dừng/phát tiếp, tiến dưới đĩa quay */}
+          {/* Bộ nút bấm điều khiển: lùi bài, dừng/phát tiếp, tiến bài */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '30px' }}>
             <button onClick={handlePrev} style={{ backgroundColor: 'transparent', border: 'none', color: '#aaa', cursor: 'pointer', fontSize: '1.5rem', outline: 'none' }}>⏮</button>
             <button onClick={togglePlay} style={{ backgroundColor: '#ff4757', border: 'none', color: '#fff', width: '50px', height: '50px', borderRadius: '50%', cursor: 'pointer', fontSize: '1.3rem', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(255,71,87,0.3)', outline: 'none' }}>
