@@ -9,7 +9,7 @@ const IMG_RELAX = 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?
 const IMG_FOCUS = 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=500&q=80';
 const IMG_SUMMER = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=500&q=80';
 
-// Danh sách bài hát phát đúng giai điệu thực tế 100% không mất bài nào
+// Danh sách bài hát phát đúng giai điệu thực tế từ link SoundCloud của bạn
 const SONGS_DATA = [
   { 
     id: 1, 
@@ -56,7 +56,17 @@ export default function Home() {
   
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Đồng bộ trạng thái xoay đĩa khi bấm nút Play/Pause trên trình phát nhạc
+  // Ép trình duyệt cập nhật lại nguồn nhạc mới ngay khi người dùng chọn bài
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.load(); // Buộc thẻ audio tải lại dữ liệu từ link mạng mới
+      if (isPlaying) {
+        audioRef.current.play().catch(err => console.log("Chặn tự động phát:", err));
+      }
+    }
+  }, [currentSong]);
+
+  // Đồng bộ nút bấm Play/Pause trên thanh điều khiển của trình duyệt với đĩa xoay
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -71,12 +81,12 @@ export default function Home() {
       audio.removeEventListener('play', handlePlay);
       audio.removeEventListener('pause', handlePause);
     };
-  }, [currentSong]);
+  }, []);
 
-  // Click chọn bài dưới danh sách
+  // Click chọn bài dưới danh sách công năng chuẩn
   const handleSelectSong = (song: typeof SONGS_DATA[0]) => {
     setCurrentSong(song);
-    setIsPlaying(false); // Reset trạng thái để khi bấm nút phát bài mới đĩa mới xoay
+    setIsPlaying(true); // Tự động kích hoạt xoay đĩa và phát nhạc bài mới liền
   };
 
   // Ô tìm kiếm lọc bài hát
@@ -99,17 +109,14 @@ export default function Home() {
               height: '100%', 
               objectFit: 'cover',
               borderRadius: '50%',
-              // Hiệu ứng xoay tròn mượt mà bằng CSS trực tiếp
               animation: 'spin 12s linear infinite',
               animationPlayState: isPlaying ? 'running' : 'paused'
             }} 
           />
-          {/* Tâm tròn nhỏ giữa đĩa nhạc giống đĩa than thật */}
           <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '40px', height: '40px', backgroundColor: '#000', borderRadius: '50%', border: '4px solid #ff4757' }}></div>
         </div>
       </div>
 
-      {/* CSS làm hiệu ứng quay đĩa */}
       <style jsx global>{`
         @keyframes spin {
           from { transform: rotate(0deg); }
@@ -123,9 +130,12 @@ export default function Home() {
         <p style={{ color: '#aaa', margin: 0 }}>{currentSong.artist}</p>
       </div>
 
-      {/* Thanh phát nhạc (Player) điều khiển âm thanh thật */}
+      {/* Thanh phát nhạc điều khiển âm thanh thật */}
       <div style={{ marginBottom: '30px', width: '100%', maxWidth: '400px' }}>
-        <audio ref={audioRef} src={currentSong.src} controls autoPlay={isPlaying} style={{ width: '100%' }} />
+        <audio ref={audioRef} controls style={{ width: '100%' }}>
+          <source src={currentSong.src} type="audio/mpeg" />
+          Trình duyệt của bạn không hỗ trợ thẻ audio.
+        </audio>
       </div>
 
       {/* Ô tìm kiếm bài hát thực tế */}
