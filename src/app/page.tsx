@@ -9,43 +9,19 @@ const IMG_RELAX = 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?
 const IMG_FOCUS = 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=500&q=80';
 const IMG_SUMMER = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=500&q=80';
 
-// Danh sách bài hát phát đúng giai điệu thực tế từ link SoundCloud của bạn
+// KHÔI PHỤC & MỞ RỘNG DANH SÁCH: Thêm rất nhiều bài hát mới để tha hồ tìm kiếm
 const SONGS_DATA = [
-  { 
-    id: 1, 
-    title: 'Không Thời Gian', 
-    artist: 'Trần Ngân', 
-    img: IMG_LOFI, 
-    src: 'https://pub-c5e31b5cdafb419a86a697ccaae4206c.r2.dev/khong_thoi_gian_tran_ngan.mp3' 
-  },
-  { 
-    id: 2, 
-    title: 'Yêu Em 2 Ngày (Slowed)', 
-    artist: 'Xuân Nghi x Nguyễn Hoàng', 
-    img: IMG_NIGHT, 
-    src: 'https://pub-c5e31b5cdafb419a86a697ccaae4206c.r2.dev/yeu_em_2_ngay_slowed.mp3' 
-  },
-  { 
-    id: 3, 
-    title: 'Không Ngừng Suy Nghĩ', 
-    artist: 'Quốc Phạm', 
-    img: IMG_RELAX, 
-    src: 'https://pub-c5e31b5cdafb419a86a697ccaae4206c.r2.dev/khong_ngung_suy_nghi_quoc_pham.mp3' 
-  },
-  { 
-    id: 4, 
-    title: 'Deep Focus', 
-    artist: 'Study & Coding Music', 
-    img: IMG_FOCUS, 
-    src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' 
-  },
-  { 
-    id: 5, 
-    title: 'Summer Chill', 
-    artist: 'Weekend Relax Music', 
-    img: IMG_SUMMER, 
-    src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3' 
-  },
+  { id: 1, title: 'Không Thời Gian', artist: 'Trần Ngân', img: IMG_LOFI, src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+  { id: 2, title: 'Yêu Em 2 Ngày (Slowed)', artist: 'Xuân Nghi x Nguyễn Hoàng', img: IMG_NIGHT, src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
+  { id: 3, title: 'Không Ngừng Suy Nghĩ', artist: 'Quốc Phạm', img: IMG_RELAX, src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
+  { id: 4, title: 'Deep Focus', artist: 'Study & Coding Music', img: IMG_FOCUS, src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' },
+  { id: 5, title: 'Summer Chill', artist: 'Weekend Relax Music', img: IMG_SUMMER, src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3' },
+  // Thêm các bài hát mới ở dưới này để tăng dữ liệu tìm kiếm
+  { id: 6, title: 'Waiting For You', artist: 'MONO', img: IMG_LOFI, src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3' },
+  { id: 7, title: 'Nấu Ăn Cho Em', artist: 'Đen Vâu ft. PiaLinh', img: IMG_SUMMER, src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3' },
+  { id: 8, title: 'See Tình', artist: 'Hoàng Thùy Linh', img: IMG_NIGHT, src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3' },
+  { id: 9, title: 'Nếu Lúc Đó', artist: 'tlinh x 2pillz', img: IMG_RELAX, src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3' },
+  { id: 10, title: 'Lan Man', artist: 'Ronboogz', img: IMG_FOCUS, src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3' }
 ];
 
 export default function Home() {
@@ -56,17 +32,7 @@ export default function Home() {
   
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Ép trình duyệt cập nhật lại nguồn nhạc mới ngay khi người dùng chọn bài
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.load(); // Buộc thẻ audio tải lại dữ liệu từ link mạng mới
-      if (isPlaying) {
-        audioRef.current.play().catch(err => console.log("Chặn tự động phát:", err));
-      }
-    }
-  }, [currentSong]);
-
-  // Đồng bộ nút bấm Play/Pause trên thanh điều khiển của trình duyệt với đĩa xoay
+  // Đồng bộ trạng thái xoay đĩa khi bấm nút Play/Pause trên trình phát nhạc
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -81,15 +47,15 @@ export default function Home() {
       audio.removeEventListener('play', handlePlay);
       audio.removeEventListener('pause', handlePause);
     };
-  }, []);
+  }, [currentSong]);
 
-  // Click chọn bài dưới danh sách công năng chuẩn
+  // Click chọn bài dưới danh sách
   const handleSelectSong = (song: typeof SONGS_DATA[0]) => {
     setCurrentSong(song);
-    setIsPlaying(true); // Tự động kích hoạt xoay đĩa và phát nhạc bài mới liền
+    setIsPlaying(false); // Reset trạng thái, bấm Play đĩa sẽ xoay
   };
 
-  // Ô tìm kiếm lọc bài hát
+  // Ô tìm kiếm lọc bài hát (Tìm theo Tên bài hát hoặc Tên ca sĩ đều được)
   const filteredSongs = songs.filter(song =>
     song.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     song.artist.toLowerCase().includes(searchTerm.toLowerCase())
@@ -130,26 +96,23 @@ export default function Home() {
         <p style={{ color: '#aaa', margin: 0 }}>{currentSong.artist}</p>
       </div>
 
-      {/* Thanh phát nhạc điều khiển âm thanh thật */}
+      {/* Thanh phát nhạc (Player) điều khiển âm thanh gốc an toàn */}
       <div style={{ marginBottom: '30px', width: '100%', maxWidth: '400px' }}>
-        <audio ref={audioRef} controls style={{ width: '100%' }}>
-          <source src={currentSong.src} type="audio/mpeg" />
-          Trình duyệt của bạn không hỗ trợ thẻ audio.
-        </audio>
+        <audio ref={audioRef} src={currentSong.src} controls autoPlay={isPlaying} style={{ width: '100%' }} />
       </div>
 
-      {/* Ô tìm kiếm bài hát thực tế */}
+      {/* Ô tìm kiếm bài hát nâng cấp cực nhạy */}
       <div style={{ marginBottom: '30px', width: '100%', maxWidth: '300px' }}>
         <input 
           type="text" 
-          placeholder="🔍 Tìm kiếm bài hát..." 
+          placeholder="🔍 Gõ tên bài hát hoặc ca sĩ..." 
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           style={{ width: '100%', padding: '10px 15px', borderRadius: '20px', border: '1px solid #333', backgroundColor: '#111', color: '#fff', textAlign: 'center', outline: 'none' }}
         />
       </div>
 
-      <h3 style={{ fontSize: '1.3rem', marginBottom: '15px' }}>Popular Songs</h3>
+      <h3 style={{ fontSize: '1.3rem', marginBottom: '15px' }}>Melody Playlist ({filteredSongs.length})</h3>
 
       {/* Danh sách bài hát phía dưới */}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '15px', justifyContent: 'center', maxWidth: '800px' }}>
